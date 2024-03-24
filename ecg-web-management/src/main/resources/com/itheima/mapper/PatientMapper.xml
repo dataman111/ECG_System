@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.PatientMapper">
+    <!--修改-->
+    <update id="updateById">
+        update patient
+        <set>
+            <if test="patient.username != null and patient.username != '' ">
+                username    = #{patient.username},
+            </if>
+            <if test="patient.name != null and patient.name != '' ">
+                name        = #{patient.name},
+            </if>
+            <if test="patient.gender != null">
+                gender      = #{patient.gender},
+            </if>
+            <if test="patient.updateTime != null">
+                update_time = #{patient.updateTime},
+            </if>
+            <if test="patient.image != null and patient.image != '' ">
+                image       = #{patient.image},
+            </if>
+            <if test="patient.deptId != null">
+                dept_id     = #{patient.deptId},
+            </if>
+            <if test="patient.entrydate != null">
+                entrydate   = #{patient.entrydate},
+            </if>
+            <if test="patient.job != null">
+                job         = #{patient.job}
+            </if>
+        </set>
+        where id = #{patient.id}
+    </update>
+    <!--批量删除-->
+    <delete id="delete">
+        delete
+        from patient
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--条件查询-->
+    <select id="list" resultType="com.itheima.pojo.Patient">
+        select *
+        from patient
+        <where>
+            <if test="name != null and name != '' ">
+                name like concat('%',#{name},'%')
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="begin != null and end != null">
+                and entrydate between #{begin} and #{end}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+</mapper>
